@@ -1,0 +1,530 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement !tbh
+\paperfontsize 11
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 2cm
+\rightmargin 3cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Wrapping du code de DassFlow-2D
+\end_layout
+
+\begin_layout Date
+16 Juillet 2020
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ Ce fichier a pour but de représenter la méthodologie du wrapping du code
+ de DassFlow-2D en Python.
+ La générateur utilisée ici est la 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f90wrap}
+\end_layout
+
+\end_inset
+
+, une version plus forte de 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f2py}
+\end_layout
+
+\end_inset
+
+.
+ Alors pourquoi on a choisi cet outil?
+\end_layout
+
+\begin_layout Standard
+Il y a des autres générateurs d'interface de Fortran-Python comme 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f2py-2e}
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{G3 f2py}
+\end_layout
+
+\end_inset
+
+, etc.
+ ceux qui basent aussi sur la 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f2py}
+\end_layout
+
+\end_inset
+
+ (inclue dans le 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{numpy}
+\end_layout
+
+\end_inset
+
+ de Python).
+ Pourtant, ces outils permettent de résoudre seulement pour des codes simples,
+ il y a une seule la 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f90wrap}
+\end_layout
+
+\end_inset
+
+ développée à partir de 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f2py}
+\end_layout
+
+\end_inset
+
+ qui fonctionne avec plus des cas complexes (le cas du type de dérivé, etc.).
+ En plus, on peut trouver une solution de wrapper Python-Fortran via un
+ autre langage comme C.
+ Autrement dit, on peut faire le wrapping Fortran-C et puis C-Python (via
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{SWIG}
+\end_layout
+
+\end_inset
+
+ par exemple), comme il est plus facile de traduire du code de Fortran à
+ C et il y a plus des outils qui sont plus fortes pour faire le wrapping
+ de C-Python.
+ Par contre, ce moyen n'est pas optimal car on a besoin d'un troisième langage,
+ ce qui rend beaucoup de complication dans la construction du code.
+\end_layout
+
+\begin_layout Section
+Relance du 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{Makefile}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Installation d'environnement
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ Avant de commencer, on a besoin d'installer un bon environnement pour la
+ compilation du code.
+ Le fichier pour installer est situé dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{/scripts/conda
+\backslash
+_env}
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout LyX-Code
+$ conda env create -f conda_env_dassflow-1d.yml
+\end_layout
+
+\begin_layout LyX-Code
+$ conda install -c conda-forge matplotlib
+\end_layout
+
+\begin_layout LyX-Code
+$ conda activate dassflow-1d
+\end_layout
+
+\begin_layout Standard
+En plus, on a besoin de modifier un bon chemin pour la variable 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{PYTHONPATH}
+\end_layout
+
+\end_inset
+
+ dans le fichier 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{/scripts/env.sh}
+\end_layout
+
+\end_inset
+
+ pour exécuter le fichier Python qui appelle des fonctions de Fortran quand
+ les modules de Python sont crées.
+ 
+\end_layout
+
+\begin_layout LyX-Code
+PYTHONPATH = Le chemin de votre machine
+\end_layout
+
+\begin_layout Subsection
+Run des commandes
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ Tout d'abord, on réinstalle les libs et recompile tous les codes du DassFlow-2D
+ par la liste des commandes ci-dessous:
+\end_layout
+
+\begin_layout LyX-Code
+$ make cleanall
+\end_layout
+
+\begin_layout LyX-Code
+$ make lib
+\end_layout
+
+\begin_layout LyX-Code
+$ make bin_files
+\end_layout
+
+\begin_layout LyX-Code
+$ make tap_files
+\end_layout
+
+\begin_layout LyX-Code
+$ make
+\end_layout
+
+\begin_layout Standard
+Une fois les codes sont recompilés, on passe à l'étape du wrapping et puis
+ exécuter le fichier Python à tester pour vérifier que le paquet 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{dassflow2d}
+\end_layout
+
+\end_inset
+
+ est bien importé depuis un fichier Python en tapant les commandes suivants:
+\end_layout
+
+\begin_layout LyX-Code
+$ make clean
+\end_layout
+
+\begin_layout LyX-Code
+$ make wrap
+\end_layout
+
+\begin_layout LyX-Code
+$ source ./scripts/env.sh
+\end_layout
+
+\begin_layout LyX-Code
+$ make testwrap
+\end_layout
+
+\begin_layout Section
+Problème rencontré
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ Quand on tente de traduire d'une langue ou d'un langage à autre langue/langage,
+ on rencontre toujours des choses qui ne peuvent pas être traduits.
+ Le 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f90wrap}
+\end_layout
+
+\end_inset
+
+ est une très bonne générateur pour faire la traduction du code de Python-Fortra
+n mais n'est pas parfaite.
+ Il y a encore des fonctions de Fortran qu'elle ne peut pas traduire en
+ Python comme la surcharge des opérateurs, la création des fichiers et des
+ textes, etc.
+ Donc on a besoin de cacher ces parties en utilisant des macros dans les
+ fichiers Fortran pour que la générateur ne traite pas ces codes au cours
+ du wrapping.
+ Le problème est que si on cache séparément ces codes, alors ces parties
+ cachés sont même cachés quand on compile les fichiers sources, donc la
+ commande 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{make}
+\end_layout
+
+\end_inset
+
+ ne fonctionne plus.
+ Le moyen est qu'on fait une liaison entre des macros pour cacher des codes
+ du Fortran avec ceux dans le 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{Makefile}
+\end_layout
+
+\end_inset
+
+.
+ Alors, ces codes vont être cachés aux bon moments, c'est à dire que quand
+ on compile les codes avec 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{make tap
+\backslash
+_files}
+\end_layout
+
+\end_inset
+
+ ou 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{make}
+\end_layout
+
+\end_inset
+
+ alors elle va traiter entièrement les codes et quand on fait le wrapping,
+ des codes non nécessaire vont être cachés.
+\end_layout
+
+\end_body
+\end_document

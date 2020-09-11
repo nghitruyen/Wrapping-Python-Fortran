@@ -1,0 +1,529 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement !tbh
+\paperfontsize 11
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 2cm
+\rightmargin 3cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Wrapping du code avec 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{Makefile}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+HUYNH Ngo Nghi Truyen
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+footnote{Élève d'ingénieur en 4ème année en Mathématiques Appliquées de
+ l'INSA Toulouse.
+ E-mail: 
+\backslash
+texttt{nnthuynh@etud.insa-toulouse.fr}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Date
+2 Juillet 2020
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ Le fichier 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{Makefile}
+\end_layout
+
+\end_inset
+
+ écrit a pour but de générer automatiquement des fichiers d'interface Python-For
+tran en utilisant la générateur 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f90wrap}
+\end_layout
+
+\end_inset
+
+, une version améliorée de la générateur d'interface 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{f2py}
+\end_layout
+
+\end_inset
+
+, utilisée spécialement pour le code du type dérivé.
+ Les répertoires contenant les fichiers source se placent dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{src/cases
+\backslash
+_test}
+\end_layout
+
+\end_inset
+
+ et les résultats se trouvent dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{build/wrappers}
+\end_layout
+
+\end_inset
+
+.
+ Le wrapping et le test basent sur 3 étapes:
+\end_layout
+
+\begin_layout Itemize
+Copier et compiler les fichiers sources Fortran:
+\end_layout
+
+\begin_layout LyX-Code
+$ make files 
+\end_layout
+
+\begin_layout Itemize
+Faire le wrapping du code:
+\end_layout
+
+\begin_layout LyX-Code
+$ make
+\end_layout
+
+\begin_layout Itemize
+Lancer le fichier Python placé dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{bin}
+\end_layout
+
+\end_inset
+
+ pour tester:
+\end_layout
+
+\begin_layout LyX-Code
+$ make run
+\end_layout
+
+\begin_layout Standard
+Notons que l'on peut supprimer les fichiers wrapped chaque fois qu'on relance
+ par la commande:
+\end_layout
+
+\begin_layout LyX-Code
+$ make cleanall
+\end_layout
+
+\begin_layout Standard
+On considère les 3 cas à tester ci-dessous.
+\end_layout
+
+\begin_layout Section
+Cas de test
+\end_layout
+
+\begin_layout Subsection
+Wrapping pour une seule fichier
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ On peut voir dans le fichier 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{src/cases
+\backslash
+_test/simple
+\backslash
+_case/test.f90}
+\end_layout
+
+\end_inset
+
+ le type 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{real
+\backslash
+_array}
+\end_layout
+
+\end_inset
+
+ qui est défini comme un vecteur de dimension 6 et le subroutine 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{testf()}
+\end_layout
+
+\end_inset
+
+ qui prend une variable de type de 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{real
+\backslash
+_array}
+\end_layout
+
+\end_inset
+
+ et renvoie un vecteur de même dimension dont l'indice 4 est modifié.
+ Le fichier 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{bin/simple
+\backslash
+_case.py}
+\end_layout
+
+\end_inset
+
+ permet de vérifier si le wrapping est correct en appelant et lancer les
+ modules 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{real
+\backslash
+_array}
+\end_layout
+
+\end_inset
+
+ et 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{testf()}
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Wrapping pour deux fichiers
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ On considère maintenant le fichier calculant le volume d'un cylindre 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{cyldnad.f90}
+\end_layout
+
+\end_inset
+
+ dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{src/cases
+\backslash
+_test/example
+\backslash
+_cylinder}
+\end_layout
+
+\end_inset
+
+ en prenant une variable de dimension définie par un autre fichier dans
+ un même répertoire 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{DNAD.f90}
+\end_layout
+
+\end_inset
+
+.
+ La difficulté ici est que l'on doit faire le wrapping pour les deux fichiers
+ dans lesquels l'un dépend de l'autre.
+ La solution est que l'on compile et combine tous ces fichiers dans un fichier
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{libsrc.a}
+\end_layout
+
+\end_inset
+
+ et génère les fichiers d'interface basés sur ce fichier.
+ Le fichier Python 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{bin/example
+\backslash
+_cylinder.py}
+\end_layout
+
+\end_inset
+
+ calcule le volume d'un cylindre en appelant les modules des fichiers viennent
+ d'être wrappé.
+\end_layout
+
+\begin_layout Subsection
+La complexité du wrapping de dassflow1d
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ La difficulté de ce cas vient du fait qu'il y a un nombre très grand des
+ fichiers à wrapper et l'organisation de ces fichiers est complexe.
+ Effectivement, il y a beaucoup des fichiers qui utilisent et appelent des
+ modules et des fichiers externes.
+ La solution est que l'on réorganise et mis en ordre des fichiers à wrapper,
+ ceux qui ont sans module et moins de module sont avants et ceux qui appelent
+ plusieurs modules sont derrières.
+ En plus, la gestion des variables dans chaque module est aussi importante
+ car n'importe quelle variable de n'importe quel module peut être appelé
+ depuis l'autre.
+\end_layout
+
+\begin_layout Standard
+FIN
+\end_layout
+
+\end_body
+\end_document

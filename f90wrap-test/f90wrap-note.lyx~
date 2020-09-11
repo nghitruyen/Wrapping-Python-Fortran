@@ -1,0 +1,421 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement !tbh
+\paperfontsize 11
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 2cm
+\rightmargin 3cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Subsection*
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+ f90wrap est une générateur d'interface développé par James Kermode
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kermode2020-f90wrap"
+literal "false"
+
+\end_inset
+
+, qui permet de générer le module Python interfaçant Fortran 90, et spécialement
+ pour le code du type dérivé.
+\end_layout
+
+\begin_layout Standard
+Globalement, la f90wrap s'agit sur 2 deux étapes.
+ Premier étape, elle génère des fichiers d'interface sous le format .py et
+ .f90, et puis, les combiner dans le deuxième étape.
+ Une fois ces fichiers sont générés et combinés, on peut considère le fichier
+ .py vient d'être créé comme un module qui va être appeler dans un autre
+ fichier Python pour tester.
+\end_layout
+
+\begin_layout Subsection*
+Installation de f90wrap
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace{0.5cm}
+\end_layout
+
+\end_inset
+
+Préparation: Git, Python 3.6+ (optionnel: Python Jupyter Notebook pour tester),
+ gfortran 4.6+, f2py et ifort 12+ (included en intel parallel studio xe).
+ 
+\end_layout
+
+\begin_layout Standard
+Installation de la version de développement:
+\end_layout
+
+\begin_layout LyX-Code
+pip install git+https://github.com/jameskermode/f90wrap
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+Pour tester et vérifier l'installation, on récupère les fichiers disponibles
+ sur Git par la commande: 
+\end_layout
+
+\begin_layout LyX-Code
+git clone https://github.com/jameskermode/f90wrap.git
+\end_layout
+
+\begin_layout Standard
+et puis pour vérifier que la f90wrap a été bien installé, on lance la commande
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{make test}
+\end_layout
+
+\end_inset
+
+ dans la répertoire 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{/examples}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Utilisation de f90wrap
+\end_layout
+
+\begin_layout Subsubsection*
+Cas 1.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+Le cas le plus simple (il n'y pas de type dérivé, de modules, de variables
+ et fonctions externes).
+
+\shape default
+ 
+\end_layout
+
+\begin_layout Standard
+Prenons un exemple dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{/ex1}
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+1e étape.
+ Générer des fichiers d'interface .f90 et .py: 
+\end_layout
+
+\begin_layout LyX-Code
+f90wrap -m module test.f90 
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Les fichiers d'interface normés module.py et f90wrap_test.f90 sont crées alors
+ (notons que f90wrap_toplevel dans le cas où il n'y pas de fonction ou subroutin
+e définie à l'externe du module).
+ 
+\end_layout
+
+\begin_layout Itemize
+2e étape.
+ Combiner ces fichiers d'interface:
+\end_layout
+
+\begin_layout LyX-Code
+f2py-f90wrap -c -m module test.f90 f90wrap_toplevel.f90 
+\end_layout
+
+\begin_layout Subsubsection*
+Cas 2.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+Avec le type dérivé et le module.
+
+\shape default
+ 
+\end_layout
+
+\begin_layout Standard
+On considère un exemple dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{/ex2}
+\end_layout
+
+\end_inset
+
+.
+ Ici, on a besoin d'abord de générer le fichier .mod avant de générer les
+ interfaces.
+ 
+\end_layout
+
+\begin_layout Itemize
+1e étape.
+ Générer fichier .mod:
+\end_layout
+
+\begin_layout LyX-Code
+gfortran -x f95-cpp-input -fPIC -c example.f90 
+\end_layout
+
+\begin_layout Itemize
+2e étape.
+ Générer des fichiers d'interface .f90 et .py:
+\end_layout
+
+\begin_layout LyX-Code
+f90wrap -m example ./example.f90 
+\end_layout
+
+\begin_layout Itemize
+3e étape.
+ Combiner ces fichiers d'interface: 
+\end_layout
+
+\begin_layout LyX-Code
+f2py-f90wrap -c -m _example f90wrap_example.f90 example.o
+\end_layout
+
+\begin_layout Subsubsection*
+Cas 3.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+Avec le type dérivé, le module et des fonctions définies à l'externe.
+
+\shape default
+ 
+\end_layout
+
+\begin_layout Standard
+Dans ce cas, on considère deux fichiers .f90 dans lesquels un fichier a des
+ fonctions et variables sont définies par l'autre.
+ 
+\end_layout
+
+\begin_layout Standard
+On considère l'exemple 3 dans 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{/ex3}
+\end_layout
+
+\end_inset
+
+: 
+\end_layout
+
+\begin_layout Itemize
+1e étape.
+ Générer des fichiers .mod:
+\end_layout
+
+\begin_layout LyX-Code
+gfortran -fPIC -x f95-cpp-input -c DNAD.f90 -o DNAD.o 
+\end_layout
+
+\begin_layout LyX-Code
+gfortran -fPIC -x f95-cpp-input -c cyldnad.f90 -o cyldnad.o 
+\end_layout
+
+\begin_layout Standard
+(notons que l'on lance d'abord le fichier DNAD.f90 car il y des fonctions
+ et variables dans le fichier cyldnad.f90 sont définies par le type vue dans
+ fichier DNAD.f90).
+\end_layout
+
+\begin_layout Itemize
+2e étape.
+ Générer des fichiers d'interface .f90 et .py:
+\end_layout
+
+\begin_layout LyX-Code
+f90wrap -m module DNAD.f90 cyldnad.f90 
+\end_layout
+
+\begin_layout Itemize
+3e étape.
+ Combiner ces fichiers d'interface:
+\end_layout
+
+\begin_layout LyX-Code
+f2py-f90wrap -c -m _module DNAD.o cyldnad.o f90wrap*.f90
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "references"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
